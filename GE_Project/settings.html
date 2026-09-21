@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="User settings and account management" />
+    <meta name="theme-color" content="#4f46e5" />
+    <title>Settings - Automatic Work Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'Kanit', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="preload"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="i18n.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+      body {
+        font-family: 'Poppins', 'Kanit', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full p-4 sm:p-8 antialiased"
+  >
+    <div class="max-w-2xl mx-auto space-y-6">
+      <!-- Header with Back Button -->
+      <div class="flex justify-between items-center">
+        <button
+          onclick="goBack()"
+          class="inline-flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition shadow-sm"
+          aria-label="Go back to profile page"
+        >
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back
+        </button>
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
+        <div class="w-12"></div>
+        <!-- Spacer for centering -->
+      </div>
+
+      <!-- Settings Card -->
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6"
+      >
+        <!-- Profile Section -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-user text-indigo-500" aria-hidden="true"></i>
+            Profile Settings
+          </h2>
+
+          <div class="space-y-3">
+            <div>
+              <label
+                for="fullName"
+                class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
+              >
+                Full Name
+              </label>
+              <input
+                type="text"
+                id="fullName"
+                placeholder="Enter your full name"
+                class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              />
+            </div>
+
+            <div>
+              <label
+                for="studentId"
+                class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
+              >
+                Student ID
+              </label>
+              <input
+                type="text"
+                id="studentId"
+                placeholder="Enter your student ID"
+                class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              />
+            </div>
+
+            <div>
+              <label
+                for="major"
+                class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
+              >
+                Major / Faculty
+              </label>
+              <input
+                type="text"
+                id="major"
+                placeholder="Enter your major or faculty"
+                class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              />
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200 dark:border-slate-800" />
+
+        <!-- Skills Section -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-code text-emerald-500" aria-hidden="true"></i>
+            Skills & Technologies
+          </h2>
+
+          <div>
+            <label
+              for="skills"
+              class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
+            >
+              Technical Skills
+            </label>
+            <textarea
+              id="skills"
+              placeholder="e.g., JavaScript, React, Node.js, Docker"
+              rows="3"
+              class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition resize-none"
+            ></textarea>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+              Separate skills with commas
+            </p>
+          </div>
+        </div>
+
+        <hr class="border-slate-200 dark:border-slate-800" />
+
+        <!-- Projects Section -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-folder text-amber-500" aria-hidden="true"></i>
+            Active Projects
+          </h2>
+
+          <div>
+            <label
+              for="projects"
+              class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
+            >
+              Current Projects
+            </label>
+            <textarea
+              id="projects"
+              placeholder="e.g., Web Application, Mobile App, Data Analysis"
+              rows="3"
+              class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition resize-none"
+            ></textarea>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+              Separate projects with commas
+            </p>
+          </div>
+        </div>
+
+        <hr class="border-slate-200 dark:border-slate-800" />
+
+        <!-- Language Section -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-globe text-blue-500" aria-hidden="true"></i>
+            Preferences
+          </h2>
+
+          <div>
+            <label
+              for="language"
+              class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
+            >
+              Language
+            </label>
+            <select
+              id="language"
+              class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            >
+              <option value="en">English</option>
+              <option value="th">ไทย (Thai)</option>
+              <option value="es">Español (Spanish)</option>
+              <option value="fr">Français (French)</option>
+              <option value="de">Deutsch (German)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="successMessage" role="alert" class="hidden"></div>
+        <div id="errorMessage" role="alert" class="hidden"></div>
+
+        <!-- Action Buttons -->
+        <div class="pt-4 space-y-3 flex gap-3">
+          <button
+            onclick="saveSettings()"
+            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-2xl text-sm transition flex items-center justify-center gap-2"
+          >
+            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+            Save Changes
+          </button>
+          <button
+            onclick="resetSettings()"
+            class="flex-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-semibold py-3 rounded-2xl text-sm transition"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      'use strict';
+
+      if (
+        localStorage.getItem('theme') === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      function goBack() {
+        if (document.referrer && document.referrer.includes('profile.html')) {
+          window.history.back();
+        } else {
+          window.location.href = 'profile.html';
+        }
+      }
+
+      async function loadSettings() {
+        try {
+          const response = await fetch('/api/me');
+          if (!response.ok) {
+            window.location.href = 'index.html';
+            return;
+          }
+          const { user } = await response.json();
+          document.getElementById('fullName').value = user.fullName || '';
+          document.getElementById('studentId').value = user.studentId || '';
+          document.getElementById('major').value = user.major || '';
+          document.getElementById('skills').value = user.skills || '';
+          document.getElementById('projects').value = user.projects || '';
+          document.getElementById('language').value = user.language || 'en';
+          localStorage.setItem('language', user.language || 'en');
+
+          // Apply language
+          if (window.setAppLanguage) {
+            window.setAppLanguage(user.language || 'en');
+          }
+        } catch (error) {
+          console.error('Settings load error:', error);
+          showError(
+            window.appTranslate
+              ? window.appTranslate('Failed to load settings')
+              : 'Failed to load settings'
+          );
+        }
+      }
+
+      async function saveSettings() {
+        try {
+          const response = await fetch('/api/settings', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fullName: document.getElementById('fullName').value.trim(),
+              studentId: document.getElementById('studentId').value.trim(),
+              major: document.getElementById('major').value.trim(),
+              skills: document.getElementById('skills').value.trim(),
+              projects: document.getElementById('projects').value.trim(),
+              language: document.getElementById('language').value,
+            }),
+          });
+
+          if (!response.ok) {
+            const responseText = await response.text();
+            let error = {};
+            try {
+              error = responseText ? JSON.parse(responseText) : {};
+            } catch (parseError) {
+              error.error = responseText || `Request failed (${response.status})`;
+            }
+            throw new Error(error.error || 'Failed to save');
+          }
+
+          const selectedLanguage = document.getElementById('language').value;
+          showSuccess(
+            window.appTranslate
+              ? window.appTranslate('Settings saved successfully!')
+              : 'Settings saved successfully!'
+          );
+          localStorage.setItem('language', selectedLanguage);
+          if (window.setAppLanguage) {
+            window.setAppLanguage(selectedLanguage);
+          }
+          setTimeout(() => {
+            window.location.href = 'profile.html';
+          }, 1500);
+        } catch (error) {
+          console.error('Save error:', error);
+          showError(window.appTranslate ? window.appTranslate(error.message) : error.message);
+        }
+      }
+
+      async function resetSettings() {
+        if (confirm(window.appTranslate ? window.appTranslate('Are you sure? This will reload your settings.') : 'Are you sure? This will reload your settings.')) {
+          await loadSettings();
+          hideMessages();
+        }
+      }
+
+      function showSuccess(message) {
+        const elem = document.getElementById('successMessage');
+        elem.textContent = message;
+        elem.className =
+          'block p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-sm font-semibold';
+      }
+
+      function showError(message) {
+        const elem = document.getElementById('errorMessage');
+        elem.textContent = message;
+        elem.className =
+          'block p-4 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl text-sm font-semibold';
+      }
+
+      function hideMessages() {
+        document.getElementById('successMessage').className = 'hidden';
+        document.getElementById('errorMessage').className = 'hidden';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        loadSettings();
+        if (window.initAppLanguage) {
+          window.initAppLanguage();
+        }
+
+        // Add language change listener
+        const languageSelect = document.getElementById('language');
+        if (languageSelect) {
+          languageSelect.addEventListener('change', (event) => {
+            const newLanguage = event.target.value;
+            localStorage.setItem('language', newLanguage);
+            if (window.setAppLanguage) {
+              window.setAppLanguage(newLanguage);
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="User profile and account management" />
+    <meta name="theme-color" content="#4f46e5" />
+    <title>User Profile - Automatic Work Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'Kanit', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="preload"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="i18n.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+      body {
+        font-family: 'Poppins', 'Kanit', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      button,
+      a {
+        transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+        transition-duration: 180ms;
+        transition-timing-function: ease;
+      }
+      button:hover,
+      a:hover {
+        transform: translateY(-1px);
+      }
+      button:active,
+      a:active {
+        transform: translateY(0) scale(0.98);
+      }
+      button:focus-visible,
+      a:focus-visible {
+        outline: 2px solid #6366f1;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full p-4 sm:p-8 antialiased"
+  >
+    <div class="max-w-3xl mx-auto space-y-6">
+      <!-- Top Nav Back Button -->
+      <div class="flex justify-between items-center">
+        <button
+          onclick="goBack()"
+          class="inline-flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition shadow-sm"
+          aria-label="Go back to main page"
+        >
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back
+        </button>
+        <span
+          class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
+        >
+          Active Student Account
+        </span>
+      </div>
+
+      <!-- Main Profile Card -->
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6"
+      >
+        <!-- User Info Header -->
+        <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+          <img
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=EngineeringStudent"
+            alt="User Profile"
+            class="w-24 h-24 rounded-3xl object-cover border-4 border-indigo-500 bg-indigo-100 dark:bg-indigo-900 shadow-md"
+            loading="lazy"
+          />
+          <div>
+            <h2
+              id="profileName"
+              class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white"
+            >
+              Loading profile...
+            </h2>
+            <p
+              id="profileUsername"
+              class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium"
+            ></p>
+            <div class="flex flex-wrap gap-2 mt-2 justify-center sm:justify-start">
+              <span
+                class="text-[11px] bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-2.5 py-0.5 rounded-md font-semibold"
+                >CPE Department</span
+              >
+              <span
+                class="text-[11px] bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 rounded-md font-semibold"
+                >Year 2 Student</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200 dark:border-slate-800" />
+
+        <!-- Personal Academic Details -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-user-gear text-indigo-500" aria-hidden="true"></i> Personal &amp;
+            Academic Details
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1"
+            >
+              <span class="text-slate-400 font-medium">Student ID</span>
+              <p id="profileStudentId" class="font-semibold text-slate-800 dark:text-slate-200">
+                -
+              </p>
+            </div>
+
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1"
+            >
+              <span class="text-slate-400 font-medium">Faculty / Major</span>
+              <p id="profileMajor" class="font-semibold text-slate-800 dark:text-slate-200">-</p>
+            </div>
+
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1"
+            >
+              <span class="text-slate-400 font-medium">Tech Stacks &amp; Skills</span>
+              <p id="profileSkills" class="font-semibold text-slate-800 dark:text-slate-200">-</p>
+            </div>
+
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1"
+            >
+              <span class="text-slate-400 font-medium">Active Key Projects</span>
+              <p id="profileProjects" class="font-semibold text-slate-800 dark:text-slate-200">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div
+            class="p-3.5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900/50"
+          >
+            <p class="text-[11px] text-indigo-500 font-medium">Tasks Completed</p>
+            <p class="text-base sm:text-lg font-bold text-indigo-700 dark:text-indigo-300">
+              24 Tasks
+            </p>
+          </div>
+          <div
+            class="p-3.5 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/50"
+          >
+            <p class="text-[11px] text-emerald-500 font-medium">Total Saved Time</p>
+            <p class="text-base sm:text-lg font-bold text-emerald-700 dark:text-emerald-300">
+              4.5 Hours
+            </p>
+          </div>
+          <div
+            class="p-3.5 bg-amber-50/50 dark:bg-amber-950/20 rounded-2xl border border-amber-100 dark:border-amber-900/50 col-span-2 sm:col-span-1"
+          >
+            <p class="text-[11px] text-amber-500 font-medium">Efficiency Score</p>
+            <p class="text-base sm:text-lg font-bold text-amber-700 dark:text-amber-300">92%</p>
+          </div>
+        </div>
+
+        <!-- Action Footer Buttons -->
+        <div class="pt-2 space-y-3">
+          <a
+            href="settings.html"
+            class="block w-full bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-300 font-semibold py-3 rounded-2xl text-xs sm:text-sm border border-indigo-200 dark:border-indigo-800 transition flex items-center justify-center gap-2"
+            aria-label="Go to settings page"
+          >
+            <i class="fa-solid fa-gear" aria-hidden="true"></i> Settings
+          </a>
+          <button
+            onclick="logout()"
+            class="w-full bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 font-semibold py-3 rounded-2xl text-xs sm:text-sm border border-rose-200 dark:border-rose-800 transition flex items-center justify-center gap-2"
+            aria-label="Log out from your account"
+          >
+            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      'use strict';
+
+      if (
+        localStorage.getItem('theme') === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      function goBack() {
+        if (document.referrer && document.referrer.includes('projectV3TEST.html')) {
+          window.history.back();
+        } else {
+          window.location.href = 'projectV3TEST.html';
+        }
+      }
+
+      async function loadProfile() {
+        const profileName = document.getElementById('profileName');
+        if (profileName) {
+          profileName.textContent = window.appTranslate
+            ? window.appTranslate('Loading profile...')
+            : 'Loading profile...';
+        }
+        try {
+          const response = await fetch('/api/me');
+          if (!response.ok) {
+            window.location.href = 'index.html';
+            return;
+          }
+          const responseText = await response.text();
+          let result;
+          try {
+            result = JSON.parse(responseText);
+          } catch (error) {
+            throw new Error('The server returned an invalid profile response.');
+          }
+          const { user } = result;
+          document.getElementById('profileName').textContent = user.fullName;
+          document.getElementById('profileUsername').textContent = `@${user.username}`;
+          document.getElementById('profileStudentId').textContent = user.studentId || '-';
+          document.getElementById('profileMajor').textContent = user.major || '-';
+          document.getElementById('profileSkills').textContent = user.skills || '-';
+          document.getElementById('profileProjects').textContent = user.projects || '-';
+
+          // Apply language from user profile
+          if (window.setAppLanguage) {
+            window.setAppLanguage(user.language || 'en');
+          }
+        } catch (error) {
+          console.error('Profile load error:', error);
+          window.location.href = 'index.html';
+        }
+      }
+
+      async function logout() {
+        try {
+          await fetch('/api/logout', { method: 'POST' });
+        } finally {
+          window.location.href = 'index.html';
+        }
+      }
+
+      loadProfile();
+      if (window.initAppLanguage) {
+        window.initAppLanguage();
+      }
+    </script>
+  </body>
+</html>

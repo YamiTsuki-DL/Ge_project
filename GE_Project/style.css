@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
+/* Critical rendering path */
+:root {
+  color-scheme: light;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Kanit', sans-serif;
+  font-size: 16px;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url('office_background.jpg') no-repeat center / cover;
+  background-attachment: fixed;
+  will-change: transform;
+}
+
+.wrapper {
+  width: 420px;
+  max-width: calc(100vw - 20px);
+  background: transparent;
+  border: 2px solid rgba(0, 0, 0, 0.507);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: #020e38;
+  border-radius: 10px;
+  padding: 30px 40px;
+  contain: layout style paint;
+}
+
+/* ========================================== */
+/* Back navigation */
+/* ========================================== */
+.back-btn-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: #020e38;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.back-btn:hover {
+  opacity: 0.8;
+  transform: translateX(-3px);
+}
+
+.back-btn i {
+  font-size: 18px;
+}
+/* ========================================== */
+
+.wrapper h1 {
+  font-size: 36px;
+  text-align: center;
+}
+
+.wrapper .input-box {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin: 30px 0;
+}
+
+.input-box input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: 2px solid rgba(0, 0, 0, 0.265);
+  border-radius: 40px;
+  font-size: 16px;
+  color: #020e38;
+  padding: 20px 45px 20px 20px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input-box input:focus {
+  outline: none;
+  border-color: #031b69;
+  box-shadow: 0 0 5px rgba(3, 27, 105, 0.3);
+}
+
+.input-box input::placeholder {
+  color: #020e38;
+}
+
+.input-box i {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 42px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #020e38;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.password-toggle:hover {
+  opacity: 0.7;
+}
+
+.wrapper .remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14.5px;
+  margin: -15px 0px 15px;
+}
+
+.remember-forgot label input {
+  accent-color: #020e38;
+  margin-right: 3px;
+}
+
+.remember-forgot a {
+  color: #020e38;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.remember-forgot a:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.wrapper .btn {
+  width: 100%;
+  height: 45px;
+  background: #fff;
+  border: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.wrapper .btn:hover {
+  background: #f5f5f5;
+}
+
+.wrapper .btn:active {
+  transform: scale(0.98);
+}
+
+.wrapper .register-link {
+  font-size: 14.5px;
+  text-align: center;
+  margin: 20px 0 15px;
+}
+
+.register-link p a {
+  color: #031b69;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.register-link p a:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+/* Error message styling */
+#message {
+  display: block;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  min-height: 20px;
+}
+
+#message:not(:empty) {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}

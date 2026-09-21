@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Automatic Work Table Management Application</title>
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'Kanit', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                50: '#eef2ff',
+                100: '#e0e7ff',
+                500: '#6366f1',
+                600: '#4f46e5',
+                700: '#4338ca',
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
+      body {
+        font-family:
+          'Poppins',
+          'Kanit',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .card-hover {
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .card-hover:hover {
+        transform: translateY(-4px) scale(1.008);
+      }
+
+      .draggable-card {
+        cursor: grab;
+        user-select: none;
+        touch-action: manipulation;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .draggable-card:hover {
+        transform: translateY(-2px) scale(1.01);
+      }
+      .draggable-card:active {
+        cursor: grabbing;
+        opacity: 0.8;
+        transform: scale(0.97);
+      }
+
+      .drag-over {
+        border-color: #6366f1 !important;
+        background-color: rgba(99, 102, 241, 0.08) !important;
+      }
+
+      @keyframes pulse-subtle {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.92);
+        }
+      }
+      .pulse-dot {
+        animation: pulse-subtle 2.5s infinite ease-in-out;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 9999px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-full pb-24 lg:pb-10 antialiased transition-colors duration-300"
+  >
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 pt-4 sm:pt-8 space-y-5 sm:space-y-6">
+      <!-- Top Header Bar -->
+      <header
+        class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md hover:bg-slate-100/80 dark:hover:bg-slate-800/40 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 border border-slate-300 dark:border-slate-700/80 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 card-hover"
+      >
+        <!-- Brand Logo / Dynamic User Avatar & Title -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3.5">
+            <!-- Default Logo Icon (ตอนยังไม่ได้ Login) -->
+            <div
+              id="defaultAppLogo"
+              class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-105"
+            >
+              <i class="fa-solid fa-calendar-check text-2xl"></i>
+            </div>
+
+            <!-- User Profile Avatar (เมื่อ Login แล้ว กดรูปตรงนี้เพื่อไป profile.html) -->
+            <a
+              id="userAvatarBtn"
+              href="profile.html"
+              class="hidden relative group cursor-pointer"
+              title="ดูโปรไฟล์ผู้ใช้"
+            >
+              <img
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed=EngineeringStudent"
+                alt="User Profile"
+                class="w-12 h-12 rounded-2xl object-cover border-2 border-indigo-500 bg-indigo-100 dark:bg-indigo-900 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform"
+              />
+              <span
+                class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"
+              ></span>
+            </a>
+
+            <div>
+              <h1
+                class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2"
+              >
+                Automatic Work Table
+                <span
+                  id="userGreeting"
+                  class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hidden"
+                >
+                  COE Student
+                </span>
+              </h1>
+              <p class="text-xs text-slate-500 dark:text-slate-400 font-normal">
+                Automated Task Management & Intelligent Work Table
+              </p>
+            </div>
+          </div>
+
+          <!-- Dark Mode Toggle Mobile -->
+          <div class="flex items-center gap-2 md:hidden">
+            <button
+              onclick="toggleDarkMode()"
+              class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+            >
+              <i id="themeIconMobile" class="fa-solid fa-moon"></i>
+            </button>
+            <button
+              onclick="resetSystem()"
+              class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              title="Reset"
+            >
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons Right -->
+        <div class="flex items-center gap-2.5">
+          <button
+            onclick="toggleDarkMode()"
+            class="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium text-xs sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 transition"
+          >
+            <i id="themeIconDesktop" class="fa-solid fa-moon"></i>
+            <span id="themeText">Dark Mode</span>
+          </button>
+
+          <button
+            onclick="resetSystem()"
+            class="hidden md:flex bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-medium px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 transition items-center gap-2"
+          >
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+
+          <button
+            onclick="autoSchedule()"
+            class="flex-1 md:flex-none bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 active:scale-95 text-white font-semibold px-5 py-2.5 rounded-2xl shadow-lg shadow-indigo-500/25 transition text-xs sm:text-sm flex justify-center items-center gap-2"
+          >
+            <i class="fa-solid fa-bolt text-amber-300"></i> Auto Schedule
+          </button>
+        </div>
+      </header>
+
+      <!-- Full-Width Auth Bar (ขยายเต็มกล่อง และนำปุ่ม Register ออก) -->
+      <div
+        id="authSectionBar"
+        class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-3 sm:p-4 rounded-3xl border border-slate-300 dark:border-slate-700/80 shadow-sm card-hover"
+      >
+        <div
+          class="flex items-center gap-3 bg-slate-100/80 dark:bg-slate-800/60 p-2 rounded-2xl border border-slate-300 dark:border-slate-700/80 w-full"
+        >
+          <button
+            onclick="loginUser()"
+            class="flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20 transition flex justify-center items-center gap-2"
+          >
+            <i class="fa-solid fa-right-to-bracket text-white"></i> Log In
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Segmented Control (Tabs) -->
+      <div
+        class="flex lg:hidden bg-slate-200/80 dark:bg-slate-900 p-1.5 rounded-2xl text-xs font-medium text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800"
+      >
+        <button
+          id="tabTasksBtn"
+          onclick="switchTab('tasks')"
+          class="flex-1 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold transition"
+        >
+          <i class="fa-solid fa-list-check mr-1.5"></i> Tasks (<span id="mobileTaskCount">0</span>)
+        </button>
+        <button
+          id="tabTimelineBtn"
+          onclick="switchTab('timeline')"
+          class="flex-1 py-2.5 rounded-xl transition"
+        >
+          <i class="fa-solid fa-calendar-day mr-1.5"></i> Today's Schedule
+        </button>
+      </div>
+
+      <!-- Main Grid Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+        <!-- Left Column: Task Intake & Backlog -->
+        <div id="sectionTasks" class="lg:col-span-5 space-y-5 sm:space-y-6">
+          <!-- Add Task Card -->
+          <div
+            class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-5 sm:p-6 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 border border-slate-300 dark:border-slate-700/80 card-hover"
+          >
+            <div class="flex items-center gap-2 mb-4">
+              <span
+                class="w-2.5 h-2.5 rounded-full bg-indigo-600 dark:bg-indigo-400 pulse-dot"
+              ></span>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                Task Intake
+              </h2>
+            </div>
+
+            <form id="taskForm" onsubmit="addTask(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
+                  >Task Title</label
+                >
+                <input
+                  type="text"
+                  id="taskTitle"
+                  required
+                  placeholder="e.g., Computer Lab Report, Game Engine Review"
+                  class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 focus:outline-none transition"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label
+                    class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
+                    >Duration (Hrs)</label
+                  >
+                  <input
+                    type="number"
+                    id="taskDuration"
+                    min="0.5"
+                    step="0.5"
+                    value="1.0"
+                    required
+                    class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 focus:outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
+                    >Priority</label
+                  >
+                  <select
+                    id="taskPriority"
+                    class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 focus:outline-none transition"
+                  >
+                    <option value="High" class="dark:bg-slate-900">High Priority</option>
+                    <option value="Medium" class="dark:bg-slate-900">Medium Priority</option>
+                    <option value="Low" selected class="dark:bg-slate-900">Low Priority</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
+                  >Deadline Time</label
+                >
+                <input
+                  type="time"
+                  id="taskDeadline"
+                  value="17:00"
+                  required
+                  class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 focus:outline-none transition"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="w-full bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-[0.99] text-white font-semibold py-3 rounded-2xl text-xs sm:text-sm transition flex justify-center items-center gap-2 shadow-md"
+              >
+                <i class="fa-solid fa-plus text-xs"></i> Add to Pending Backlog
+              </button>
+            </form>
+          </div>
+
+          <!-- Unscheduled Backlog Card -->
+          <div
+            class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-5 sm:p-6 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 border border-slate-300 dark:border-slate-700/80 card-hover"
+          >
+            <div class="flex justify-between items-center mb-1">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  Pending Backlog (<span id="taskCount">0</span>)
+                </h2>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mb-3 font-normal">
+              <i class="fa-solid fa-grip-lines mr-1"></i> Tap "Schedule" or drag and drop into the
+              timeline
+            </p>
+
+            <div
+              id="unassignedDropzone"
+              ondragover="handleDragOver(event)"
+              ondragleave="handleDragLeave(event)"
+              ondrop="handleDropToUnassigned(event)"
+              class="min-h-[140px] p-2 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 transition-colors"
+            >
+              <div id="unassignedTasks" class="space-y-2.5"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Timeline & Analytics -->
+        <div id="sectionTimeline" class="hidden lg:block lg:col-span-7 space-y-5 sm:space-y-6">
+          <!-- Key Metrics Cards -->
+          <div class="grid grid-cols-3 gap-3 sm:gap-4">
+            <div
+              class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-4 rounded-3xl border border-slate-300 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 card-hover"
+            >
+              <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-1">
+                <i class="fa-solid fa-hourglass-half text-xs"></i>
+                <p class="text-xs font-semibold">Time Saved</p>
+              </div>
+              <p
+                id="timeSaved"
+                class="text-base sm:text-xl font-bold text-emerald-600 dark:text-emerald-400"
+              >
+                ~0 mins
+              </p>
+            </div>
+
+            <div
+              class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-4 rounded-3xl border border-slate-300 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 card-hover"
+            >
+              <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-1">
+                <i class="fa-solid fa-chart-pie text-xs"></i>
+                <p class="text-xs font-semibold">Schedule Rate</p>
+              </div>
+              <p
+                id="scheduleRate"
+                class="text-base sm:text-xl font-bold text-indigo-600 dark:text-indigo-400"
+              >
+                0%
+              </p>
+            </div>
+
+            <div
+              class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-4 rounded-3xl border border-slate-300 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 card-hover"
+            >
+              <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-1">
+                <i class="fa-solid fa-shield-halved text-xs"></i>
+                <p class="text-xs font-semibold">Risk Alerts</p>
+              </div>
+              <p
+                id="notifCount"
+                class="text-base sm:text-xl font-bold text-amber-600 dark:text-amber-400"
+              >
+                0 Alerts
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Container -->
+          <div
+            class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-5 sm:p-6 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 border border-slate-300 dark:border-slate-700/80 card-hover"
+          >
+            <div class="flex justify-between items-center mb-1">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-dot"></span>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  Today's Work Table
+                </h2>
+              </div>
+              <span
+                class="text-[11px] sm:text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 font-semibold px-3 py-1 rounded-full"
+              >
+                09:00 - 17:00
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mb-5 font-normal">
+              <i class="fa-solid fa-mug-saucer mr-1"></i> Sequenced work schedule with automated
+              rest breaks
+            </p>
+
+            <div
+              id="timelineDropzone"
+              ondragover="handleDragOver(event)"
+              ondragleave="handleDragLeave(event)"
+              ondrop="handleDropToTimeline(event)"
+              class="min-h-[260px] p-2 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 transition-colors"
+            >
+              <div
+                id="timeline"
+                class="space-y-3.5 relative before:absolute before:inset-0 before:left-[52px] sm:before:left-[67px] before:w-0.5 before:bg-slate-300 dark:before:bg-slate-700"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Risk Notification Box -->
+          <div
+            class="bg-amber-50/80 hover:bg-amber-100/80 dark:bg-amber-950/30 dark:hover:bg-amber-950/20 border border-amber-300 dark:border-amber-800/80 p-4 rounded-3xl flex items-start gap-3.5 card-hover"
+          >
+            <div class="text-amber-600 dark:text-amber-400 text-base mt-0.5">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="text-xs space-y-1">
+              <h4 class="font-bold text-amber-900 dark:text-amber-300 text-sm">Smart Risk Alert</h4>
+              <p id="notificationText" class="text-amber-800 dark:text-amber-400 leading-relaxed">
+                No scheduling risks detected. You will be notified if any task exceeds its deadline.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div
+      class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-300 dark:border-slate-800 px-6 py-2.5 flex justify-around items-center z-50"
+    >
+      <button
+        onclick="switchTab('tasks')"
+        id="navTasksBtn"
+        class="flex flex-col items-center gap-0.5 text-indigo-600 dark:text-indigo-400"
+      >
+        <i class="fa-solid fa-list-check text-base"></i>
+        <span class="text-[10px] font-semibold">Tasks</span>
+      </button>
+      <button
+        onclick="autoSchedule()"
+        class="flex flex-col items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-full w-12 h-12 shadow-lg shadow-indigo-600/30 -mt-6 border-4 border-slate-50 dark:border-slate-950 active:scale-90 transition"
+      >
+        <i class="fa-solid fa-bolt text-base text-amber-300"></i>
+      </button>
+      <button
+        onclick="switchTab('timeline')"
+        id="navTimelineBtn"
+        class="flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500"
+      >
+        <i class="fa-solid fa-calendar-day text-base"></i>
+        <span class="text-[10px] font-semibold">Schedule</span>
+      </button>
+    </div>
+
+    <!-- JavaScript Logic 
+      { id: 1, title: "Computer Lab Report", duration: 2.0, priority: "High", deadline: "12:00", scheduled: false },
+      { id: 2, title: "Game Dev Project Meeting", duration: 1.5, priority: "High", deadline: "15:00", scheduled: false },
+      { id: 3, title: "Circuit Analysis Review", duration: 1.0, priority: "Medium", deadline: "17:00", scheduled: false },
+      { id: 4, title: "Ethics Philosophy Reading", duration: 0.5, priority: "Low", deadline: "17:00", scheduled: false } 
+  -->
+    <script>
+      const defaultTasks = [];
+      const tasksStorageKey = 'automaticWorkTableTasks';
+
+      function loadTasks() {
+        const savedTasks = localStorage.getItem(tasksStorageKey);
+        if (!savedTasks) {
+          return JSON.parse(JSON.stringify(defaultTasks));
+        }
+
+        try {
+          const parsedTasks = JSON.parse(savedTasks);
+          if (!Array.isArray(parsedTasks)) {
+            throw new Error('Saved tasks must be an array.');
+          }
+
+          return parsedTasks
+            .filter((task) => task && typeof task === 'object' && task.title && task.deadline)
+            .map((task) => ({ ...task, scheduled: task.scheduled === true }));
+        } catch (error) {
+          console.warn('Unable to restore saved tasks. Starting with an empty task list.', error);
+          localStorage.removeItem(tasksStorageKey);
+          return JSON.parse(JSON.stringify(defaultTasks));
+        }
+      }
+
+      function saveTasks() {
+        localStorage.setItem(tasksStorageKey, JSON.stringify(tasks));
+      }
+
+      let tasks = loadTasks();
+      let draggedTaskId = null;
+
+      function loginUser() {
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'index.html';
+      }
+
+      function checkAuthStatus() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const authSectionBar = document.getElementById('authSectionBar');
+        const defaultAppLogo = document.getElementById('defaultAppLogo');
+        const userAvatarBtn = document.getElementById('userAvatarBtn');
+        const userGreeting = document.getElementById('userGreeting');
+
+        if (isLoggedIn) {
+          authSectionBar.classList.add('hidden');
+          defaultAppLogo.classList.add('hidden');
+          userAvatarBtn.classList.remove('hidden');
+          userGreeting.classList.remove('hidden');
+        } else {
+          authSectionBar.classList.remove('hidden');
+          defaultAppLogo.classList.remove('hidden');
+          userAvatarBtn.classList.add('hidden');
+          userGreeting.classList.add('hidden');
+        }
+      }
+
+      function toggleDarkMode() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeUI(isDark);
+      }
+
+      function updateThemeUI(isDark) {
+        const iconMobile = document.getElementById('themeIconMobile');
+        const iconDesktop = document.getElementById('themeIconDesktop');
+        const themeText = document.getElementById('themeText');
+
+        if (isDark) {
+          if (iconMobile) iconMobile.className = 'fa-solid fa-sun text-amber-400';
+          if (iconDesktop) iconDesktop.className = 'fa-solid fa-sun text-amber-400';
+          if (themeText) themeText.innerText = 'Light Mode';
+        } else {
+          if (iconMobile) iconMobile.className = 'fa-solid fa-moon text-slate-600';
+          if (iconDesktop) iconDesktop.className = 'fa-solid fa-moon text-slate-600';
+          if (themeText) themeText.innerText = 'Dark Mode';
+        }
+      }
+
+      if (
+        localStorage.getItem('theme') === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark');
+        updateThemeUI(true);
+      } else {
+        document.documentElement.classList.remove('dark');
+        updateThemeUI(false);
+      }
+
+      function switchTab(tab) {
+        const sectionTasks = document.getElementById('sectionTasks');
+        const sectionTimeline = document.getElementById('sectionTimeline');
+        const tabTasksBtn = document.getElementById('tabTasksBtn');
+        const tabTimelineBtn = document.getElementById('tabTimelineBtn');
+        const navTasksBtn = document.getElementById('navTasksBtn');
+        const navTimelineBtn = document.getElementById('navTimelineBtn');
+
+        if (tab === 'tasks') {
+          sectionTasks.classList.remove('hidden');
+          sectionTimeline.classList.add('hidden');
+          tabTasksBtn.className =
+            'flex-1 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold transition';
+          tabTimelineBtn.className = 'flex-1 py-2.5 rounded-xl transition';
+          navTasksBtn.className =
+            'flex flex-col items-center gap-0.5 text-indigo-600 dark:text-indigo-400';
+          navTimelineBtn.className =
+            'flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500';
+        } else {
+          sectionTasks.classList.add('hidden');
+          sectionTimeline.classList.remove('hidden');
+          tabTimelineBtn.className =
+            'flex-1 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold transition';
+          tabTasksBtn.className = 'flex-1 py-2.5 rounded-xl transition';
+          navTimelineBtn.className =
+            'flex flex-col items-center gap-0.5 text-indigo-600 dark:text-indigo-400';
+          navTasksBtn.className =
+            'flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500';
+        }
+      }
+
+      function renderUnassignedTasks() {
+        const container = document.getElementById('unassignedTasks');
+        const unassigned = tasks.filter((t) => !t.scheduled);
+        document.getElementById('taskCount').innerText = unassigned.length;
+        document.getElementById('mobileTaskCount').innerText = unassigned.length;
+
+        if (unassigned.length === 0) {
+          container.innerHTML = `<div class="text-center py-8 text-slate-400 dark:text-slate-600 text-xs font-medium">All tasks have been scheduled</div>`;
+          return;
+        }
+
+        container.innerHTML = unassigned
+          .map((task) => {
+            return `
+          <div id="task-${task.id}" draggable="true" ondragstart="handleDragStart(event, ${
+            task.id
+          })" class="draggable-card p-3.5 bg-slate-50 hover:bg-slate-100/90 dark:bg-slate-800/60 dark:hover:bg-slate-800/30 border border-slate-300 dark:border-slate-700/80 rounded-2xl flex justify-between items-center shadow-sm hover:border-indigo-400 dark:hover:border-indigo-500">
+            <div class="space-y-1 pr-2">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <i class="fa-solid fa-grip-vertical text-slate-300 dark:text-slate-600 text-xs hidden sm:inline"></i>
+                <span class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100">${
+                  task.title
+                }</span>
+                ${getPriorityBadge(task.priority)}
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
+                <i class="fa-regular fa-clock"></i> ${task.duration} hrs | Deadline: ${
+                  task.deadline
+                }
+              </p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="toggleSchedule(${
+                task.id
+              })" class="bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 border border-indigo-300 dark:border-indigo-800 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition flex items-center gap-1" title="Schedule Task">
+                <span>Schedule</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+              <button onclick="deleteTask(${
+                task.id
+              })" class="text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 p-1.5 text-xs transition">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+          })
+          .join('');
+      }
+
+      function renderTimeline() {
+        const container = document.getElementById('timeline');
+        const scheduledTasks = tasks.filter((t) => t.scheduled);
+
+        const minutesSaved = scheduledTasks.length * 10;
+        document.getElementById('timeSaved').innerText = `~${minutesSaved} mins`;
+
+        if (scheduledTasks.length === 0) {
+          container.innerHTML = `
+          <div class="text-center py-10 text-slate-400 dark:text-slate-600 text-xs font-medium">
+            <i class="fa-regular fa-calendar-xmark text-3xl mb-2 block text-slate-300 dark:text-slate-700"></i>
+            No tasks scheduled yet. Tap "Schedule" or click "Auto Schedule".
+          </div>
+        `;
+          document.getElementById('scheduleRate').innerText = `0%`;
+          document.getElementById('notifCount').innerText = `0 Alerts`;
+          document.getElementById('notificationText').innerText =
+            'No scheduling risks detected. You will be notified if any task exceeds its deadline.';
+          return;
+        }
+
+        let currentMinutes = 9 * 60;
+        const endMinutes = 17 * 60;
+        let timelineHTML = '';
+        let urgentAlerts = [];
+
+        scheduledTasks.forEach((task, index) => {
+          const taskDurationMins = task.duration * 60;
+          const startStr = minutesToTime(currentMinutes);
+          const endMins = currentMinutes + taskDurationMins;
+          const endStr = minutesToTime(endMins);
+
+          const [dlH, dlM] = task.deadline.split(':').map(Number);
+          const deadlineMins = dlH * 60 + dlM;
+
+          if (endMins > deadlineMins) {
+            urgentAlerts.push(
+              `"${task.title}" finishes at ${endStr} (Exceeds deadline ${task.deadline})`
+            );
+          }
+
+          const borderClass =
+            task.priority === 'High'
+              ? 'border-l-rose-500 bg-rose-50/30 dark:bg-rose-950/20'
+              : task.priority === 'Medium'
+                ? 'border-l-amber-500 bg-amber-50/30 dark:bg-amber-950/20'
+                : 'border-l-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20';
+
+          timelineHTML += `
+          <div id="task-${task.id}" draggable="true" ondragstart="handleDragStart(event, ${
+            task.id
+          })" class="draggable-card flex items-start gap-3 sm:gap-4 relative z-10">
+            <div class="w-11 sm:w-14 text-right text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 pt-2">${startStr}</div>
+            <div class="p-3.5 bg-white hover:bg-slate-100/90 dark:bg-slate-800 dark:hover:bg-slate-800/40 border-l-4 ${borderClass} border border-slate-300 dark:border-slate-700/80 rounded-2xl flex-1 shadow-sm flex justify-between items-center">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100">${
+                    task.title
+                  }</h4>
+                  ${getPriorityBadge(task.priority)}
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
+                  Time Slot: ${startStr} - ${endStr} (${task.duration} hrs)
+                </p>
+              </div>
+              <button onclick="toggleSchedule(${
+                task.id
+              })" class="text-slate-400 hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400 p-1 transition" title="Unschedule">
+                <i class="fa-solid fa-circle-xmark text-base"></i>
+              </button>
+            </div>
+          </div>
+        `;
+
+          currentMinutes = endMins;
+
+          if (currentMinutes + 15 <= endMinutes && index < scheduledTasks.length - 1) {
+            const breakStart = minutesToTime(currentMinutes);
+            currentMinutes += 15;
+            const breakEnd = minutesToTime(currentMinutes);
+
+            timelineHTML += `
+            <div class="flex items-start gap-3 sm:gap-4 relative z-10 opacity-90">
+              <div class="w-11 sm:w-14 text-right text-[11px] sm:text-xs font-semibold text-slate-400 dark:text-slate-500 pt-1">${breakStart}</div>
+              <div class="p-2.5 bg-emerald-50/80 hover:bg-emerald-100/80 dark:bg-emerald-950/30 dark:hover:bg-emerald-950/20 border border-dashed border-emerald-400 dark:border-emerald-800/80 rounded-xl flex-1 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-mug-hot text-emerald-600 dark:text-emerald-400"></i>
+                <span><strong>Short Break:</strong> ${breakStart} - ${breakEnd} (15 mins)</span>
+              </div>
+            </div>
+          `;
+          }
+        });
+
+        container.innerHTML = timelineHTML;
+
+        const rate = Math.round((scheduledTasks.length / tasks.length) * 100) || 0;
+        document.getElementById('scheduleRate').innerText = `${rate}%`;
+        document.getElementById('notifCount').innerText = `${urgentAlerts.length} Alerts`;
+
+        if (urgentAlerts.length > 0) {
+          document.getElementById('notificationText').innerHTML =
+            `<strong>Risk Detected!</strong> ` + urgentAlerts.join(' | ');
+        } else {
+          document.getElementById('notificationText').innerHTML =
+            `<strong>Optimal Schedule:</strong> All assigned tasks are scheduled safely within deadlines.`;
+        }
+      }
+
+      function getPriorityBadge(priority) {
+        if (priority === 'High') {
+          return '<span class="bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 text-[10px] font-semibold px-2 py-0.5 rounded-md">High</span>';
+        } else if (priority === 'Medium') {
+          return '<span class="bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-[10px] font-semibold px-2 py-0.5 rounded-md">Medium</span>';
+        } else {
+          return '<span class="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-[10px] font-semibold px-2 py-0.5 rounded-md">Low</span>';
+        }
+      }
+
+      function toggleSchedule(id) {
+        const task = tasks.find((t) => t.id === id);
+        if (task) {
+          task.scheduled = !task.scheduled;
+          saveTasks();
+          renderUnassignedTasks();
+          renderTimeline();
+        }
+      }
+
+      function handleDragStart(e, id) {
+        draggedTaskId = id;
+        e.dataTransfer.setData('text/plain', id);
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+      }
+
+      function handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+      }
+
+      function handleDropToTimeline(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        if (draggedTaskId !== null) {
+          const task = tasks.find((t) => t.id === draggedTaskId);
+          if (task) {
+            task.scheduled = true;
+            saveTasks();
+            renderUnassignedTasks();
+            renderTimeline();
+          }
+          draggedTaskId = null;
+        }
+      }
+
+      function handleDropToUnassigned(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        if (draggedTaskId !== null) {
+          const task = tasks.find((t) => t.id === draggedTaskId);
+          if (task) {
+            task.scheduled = false;
+            saveTasks();
+            renderUnassignedTasks();
+            renderTimeline();
+          }
+          draggedTaskId = null;
+        }
+      }
+
+      function autoSchedule() {
+        const priorityScore = { High: 3, Medium: 2, Low: 1 };
+
+        tasks.sort((a, b) => {
+          if (priorityScore[b.priority] !== priorityScore[a.priority]) {
+            return priorityScore[b.priority] - priorityScore[a.priority];
+          }
+          return a.deadline.localeCompare(b.deadline);
+        });
+
+        tasks.forEach((t) => (t.scheduled = true));
+        saveTasks();
+        renderUnassignedTasks();
+        renderTimeline();
+
+        if (window.innerWidth < 1024) {
+          switchTab('timeline');
+        }
+      }
+
+      function addTask(e) {
+        e.preventDefault();
+        const title = document.getElementById('taskTitle').value;
+        const duration = parseFloat(document.getElementById('taskDuration').value);
+        const priority = document.getElementById('taskPriority').value;
+        const deadline = document.getElementById('taskDeadline').value;
+
+        tasks.push({
+          id: Date.now(),
+          title,
+          duration,
+          priority,
+          deadline,
+          scheduled: false,
+        });
+
+        saveTasks();
+        document.getElementById('taskForm').reset();
+        document.getElementById('taskDeadline').value = '17:00';
+        renderUnassignedTasks();
+      }
+
+      function deleteTask(id) {
+        tasks = tasks.filter((t) => t.id !== id);
+        saveTasks();
+        renderUnassignedTasks();
+        renderTimeline();
+      }
+
+      function resetSystem() {
+        tasks.forEach((task) => (task.scheduled = false));
+        draggedTaskId = null;
+
+        saveTasks();
+        document.getElementById('timelineDropzone').classList.remove('drag-over');
+        document.getElementById('unassignedDropzone').classList.remove('drag-over');
+        renderUnassignedTasks();
+        renderTimeline();
+      }
+
+      function minutesToTime(mins) {
+        const h = Math.floor(mins / 60)
+          .toString()
+          .padStart(2, '0');
+        const m = (mins % 60).toString().padStart(2, '0');
+        return `${h}:${m}`;
+      }
+
+      checkAuthStatus();
+      renderUnassignedTasks();
+      renderTimeline();
+    </script>
+  </body>
+</html>

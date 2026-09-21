@@ -1,0 +1,44 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: work-table-app
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      SESSION_SECRET: ${SESSION_SECRET:-dev-secret-change-in-production}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - ./server.js:/app/server.js
+      - ./index.html:/app/index.html
+      - ./profile.html:/app/profile.html
+      - ./settings.html:/app/settings.html
+      - ./projectV3TEST.html:/app/projectV3TEST.html
+      - ./style.css:/app/style.css
+      - work-table-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').get('http://localhost:3000/api/me', (r) => {if (r.statusCode !== 200 && r.statusCode !== 401) throw new Error(r.statusCode)})",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - work-table-network
+
+volumes:
+  work-table-data:
+    driver: local
+
+networks:
+  work-table-network:
+    driver: bridge
