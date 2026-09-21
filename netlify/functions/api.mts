@@ -191,7 +191,7 @@ export default async function handler(req: Request, context: Context) {
     if (req.method === 'POST' && path === '/api/register') return await register(req);
     if (req.method === 'POST' && path === '/api/login') return await login(req, context);
     if (req.method === 'GET' && path === '/api/me') return await me(context);
-    if (req.method === 'PUT' && ['/api/settings', '/api/profile', '/profile'].includes(path)) {
+    if (req.method === 'PUT' && ['/api/settings', '/api/profile'].includes(path)) {
       return await updateSettings(req, context);
     }
     if (req.method === 'POST' && path === '/api/logout') return await logout(context);
@@ -210,5 +210,5 @@ export default async function handler(req: Request, context: Context) {
 }
 
 export const config: Config = {
-  path: ['/api/*', '/profile'],
+  path: '/api/*',
 };

@@ -49,6 +49,10 @@ app.use(
   })
 );
 
+// Match the clean browser routes used by the Netlify deployment.
+app.get('/profile', (req, res) => res.sendFile(path.join(__dirname, 'profile.html')));
+app.get('/settings', (req, res) => res.sendFile(path.join(__dirname, 'settings.html')));
+
 // Database initialization
 const dataDir = path.join(__dirname, 'data');
 fs.mkdirSync(dataDir, { recursive: true });
@@ -293,7 +297,7 @@ function updateProfileSettings(req, res) {
 }
 
 // Keep the current endpoint and legacy endpoint names working.
-app.put(['/api/settings', '/api/profile', '/profile'], requireAuth, updateProfileSettings);
+app.put(['/api/settings', '/api/profile'], requireAuth, updateProfileSettings);
 
 app.post('/api/logout', (req, res) => {
   req.session.destroy((error) => {
