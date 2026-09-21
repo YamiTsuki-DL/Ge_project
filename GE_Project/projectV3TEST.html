@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <title>Automatic Work Table Management Application</title>
     <!-- Tailwind CSS & FontAwesome -->
@@ -121,9 +121,23 @@
         transform: translateY(0) scale(0.98);
       }
       button:focus-visible,
-      a:focus-visible {
+      a:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
         outline: 2px solid #6366f1;
         outline-offset: 2px;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
       }
     </style>
   </head>
@@ -144,7 +158,7 @@
               id="defaultAppLogo"
               class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-105"
             >
-              <i class="fa-solid fa-calendar-check text-2xl"></i>
+              <i class="fa-solid fa-calendar-check text-2xl" aria-hidden="true"></i>
             </div>
 
             <!-- User Profile Avatar -->
@@ -153,10 +167,11 @@
               href="profile.html"
               class="hidden relative group cursor-pointer"
               title="View user profile"
+              aria-label="View user profile"
             >
               <img
                 src="https://api.dicebear.com/7.x/avataaars/svg?seed=EngineeringStudent"
-                alt="User Profile"
+                alt="User profile avatar"
                 class="w-12 h-12 rounded-2xl object-cover border-2 border-indigo-500 bg-indigo-100 dark:bg-indigo-900 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform"
               />
               <span
@@ -186,16 +201,18 @@
           <div class="flex items-center gap-2 md:hidden">
             <button
               onclick="toggleDarkMode()"
+              aria-label="Toggle dark mode"
               class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
             >
-              <i id="themeIconMobile" class="fa-solid fa-moon"></i>
+              <i id="themeIconMobile" class="fa-solid fa-moon" aria-hidden="true"></i>
             </button>
             <button
               onclick="resetSystem()"
               class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
               title="Reset"
+              aria-label="Reset scheduled tasks"
             >
-              <i class="fa-solid fa-rotate-left"></i>
+              <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -206,32 +223,38 @@
           <div
             class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs"
           >
-            <i class="fa-regular fa-clock text-indigo-500"></i>
+            <i class="fa-regular fa-clock text-indigo-500" aria-hidden="true"></i>
             <span class="font-semibold text-slate-600 dark:text-slate-400 hidden sm:inline"
               >Hours:</span
             >
+            <label for="workStart" class="sr-only">Work hours start time</label>
             <input
               type="time"
               id="workStart"
               value="09:00"
               onchange="updateWorkHours()"
-              class="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-none"
+              aria-label="Work hours start time"
+              class="bg-transparent font-medium text-slate-800 dark:text-slate-200 rounded px-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             />
-            <span class="text-slate-400">-</span>
+            <span class="text-slate-400" aria-hidden="true">-</span>
+            <label for="workEnd" class="sr-only">Work hours end time</label>
             <input
               type="time"
               id="workEnd"
               value="17:00"
               onchange="updateWorkHours()"
-              class="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-none"
+              aria-label="Work hours end time"
+              class="bg-transparent font-medium text-slate-800 dark:text-slate-200 rounded px-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             />
           </div>
 
           <button
             onclick="toggleDarkMode()"
+            id="themeToggleDesktop"
+            aria-label="Toggle dark mode"
             class="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium text-xs sm:text-sm px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 transition"
           >
-            <i id="themeIconDesktop" class="fa-solid fa-moon"></i>
+            <i id="themeIconDesktop" class="fa-solid fa-moon" aria-hidden="true"></i>
             <span id="themeText">Dark Mode</span>
           </button>
 
@@ -239,23 +262,26 @@
             href="https://docs.google.com/forms/d/e/1FAIpQLScta_-Y19FAqYqEPfx0CKoxnNzR6_cvoAlPCKgX3SgUG_5Dww/viewform?usp=sharing&ouid=110798651413900741607"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Feedback Form (opens in new window)"
             class="flex items-center gap-2 bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-medium text-xs sm:text-sm px-4 py-2.5 rounded-2xl border border-indigo-200 dark:border-indigo-800 transition"
           >
-            <i class="fa-solid fa-external-link-alt"></i> Feedback Form
+            <i class="fa-solid fa-external-link-alt" aria-hidden="true"></i> Feedback Form
           </a>
 
           <button
             onclick="resetSystem()"
+            aria-label="Reset scheduled tasks"
             class="hidden md:flex bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-medium px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 transition items-center gap-2"
           >
-            <i class="fa-solid fa-rotate-left"></i> Reset
+            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset
           </button>
 
           <button
             onclick="autoSchedule()"
+            aria-label="Auto schedule all tasks"
             class="flex-1 md:flex-none bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 active:scale-95 text-white font-semibold px-5 py-2.5 rounded-2xl shadow-lg shadow-indigo-500/25 transition text-xs sm:text-sm flex justify-center items-center gap-2"
           >
-            <i class="fa-solid fa-bolt text-amber-300"></i> Auto Schedule
+            <i class="fa-solid fa-bolt text-amber-300" aria-hidden="true"></i> Auto Schedule
           </button>
         </div>
       </header>
@@ -270,37 +296,46 @@
         >
           <button
             onclick="loginUser()"
+            aria-label="Log in to your account"
             class="flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20 transition flex justify-center items-center gap-2"
           >
-            <i class="fa-solid fa-right-to-bracket text-white"></i> Log In
+            <i class="fa-solid fa-right-to-bracket text-white" aria-hidden="true"></i> Log In
           </button>
         </div>
       </div>
 
       <!-- Mobile Segmented Control (Tabs) -->
       <div
+        role="tablist"
+        aria-label="Content sections"
         class="flex lg:hidden bg-slate-200/80 dark:bg-slate-900 p-1.5 rounded-2xl text-xs font-medium text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-800"
       >
         <button
           id="tabTasksBtn"
+          role="tab"
+          aria-selected="true"
+          aria-controls="sectionTasks"
           onclick="switchTab('tasks')"
           class="flex-1 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold transition"
         >
-          <i class="fa-solid fa-list-check mr-1.5"></i> Tasks (<span id="mobileTaskCount">0</span>)
+          <i class="fa-solid fa-list-check mr-1.5" aria-hidden="true"></i> Tasks (<span id="mobileTaskCount">0</span>)
         </button>
         <button
           id="tabTimelineBtn"
+          role="tab"
+          aria-selected="false"
+          aria-controls="sectionTimeline"
           onclick="switchTab('timeline')"
           class="flex-1 py-2.5 rounded-xl transition"
         >
-          <i class="fa-solid fa-calendar-day mr-1.5"></i> Today's Schedule
+          <i class="fa-solid fa-calendar-day mr-1.5" aria-hidden="true"></i> Today's Schedule
         </button>
       </div>
 
       <!-- Main Grid Layout -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
         <!-- Left Column: Task Intake & Backlog -->
-        <div id="sectionTasks" class="lg:col-span-5 space-y-5 sm:space-y-6">
+        <section id="sectionTasks" aria-label="Task intake and backlog" class="lg:col-span-5 space-y-5 sm:space-y-6">
           <!-- Add Task Card -->
           <div
             class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-5 sm:p-6 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 border border-slate-300 dark:border-slate-700/80 card-hover"
@@ -308,6 +343,7 @@
             <div class="flex items-center gap-2 mb-4">
               <span
                 class="w-2.5 h-2.5 rounded-full bg-indigo-600 dark:bg-indigo-400 pulse-dot"
+                aria-hidden="true"
               ></span>
               <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                 Task Intake
@@ -316,7 +352,7 @@
 
             <form id="taskForm" onsubmit="addTask(event)" class="space-y-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
+                <label for="taskTitle" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
                   >Task Title</label
                 >
                 <input
@@ -331,6 +367,7 @@
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label
+                    for="taskDuration"
                     class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
                     >Duration (Hrs)</label
                   >
@@ -346,6 +383,7 @@
                 </div>
                 <div>
                   <label
+                    for="taskPriority"
                     class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
                     >Priority</label
                   >
@@ -361,7 +399,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
+                <label for="taskDeadline" class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5"
                   >Deadline Time</label
                 >
                 <input
@@ -375,9 +413,10 @@
 
               <button
                 type="submit"
+                aria-label="Add to Pending Backlog"
                 class="w-full bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-[0.99] text-white font-semibold py-3 rounded-2xl text-xs sm:text-sm transition flex justify-center items-center gap-2 shadow-md"
               >
-                <i class="fa-solid fa-plus text-xs"></i> Add to Pending Backlog
+                <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i> Add to Pending Backlog
               </button>
             </form>
           </div>
@@ -388,37 +427,39 @@
           >
             <div class="flex justify-between items-center mb-1">
               <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500" aria-hidden="true"></span>
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                   Pending Backlog (<span id="taskCount">0</span>)
                 </h2>
               </div>
             </div>
             <p class="text-xs text-slate-400 dark:text-slate-500 mb-3 font-normal">
-              <i class="fa-solid fa-grip-lines mr-1"></i> Tap "Schedule" or drag and drop into the
+              <i class="fa-solid fa-grip-lines mr-1" aria-hidden="true"></i> Tap "Schedule" or drag and drop into the
               timeline
             </p>
 
             <div
               id="unassignedDropzone"
+              role="region"
+              aria-label="Pending backlog drop zone"
               ondragover="handleDragOver(event)"
               ondragleave="handleDragLeave(event)"
               ondrop="handleDropToUnassigned(event)"
               class="min-h-[140px] p-2 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 transition-colors"
             >
-              <div id="unassignedTasks" class="space-y-2.5"></div>
+              <div id="unassignedTasks" role="list" class="space-y-2.5"></div>
             </div>
           </div>
-        </div>
+        </section>
         <!-- Right Column: Timeline & Analytics -->
-        <div id="sectionTimeline" class="hidden lg:block lg:col-span-7 space-y-5 sm:space-y-6">
+        <section id="sectionTimeline" aria-label="Work timeline and analytics" class="hidden lg:block lg:col-span-7 space-y-5 sm:space-y-6">
           <!-- Key Metrics Cards -->
           <div class="grid grid-cols-3 gap-3 sm:gap-4">
             <div
               class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-4 rounded-3xl border border-slate-300 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 card-hover"
             >
               <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-1">
-                <i class="fa-solid fa-hourglass-half text-xs"></i>
+                <i class="fa-solid fa-hourglass-half text-xs" aria-hidden="true"></i>
                 <p class="text-xs font-semibold">Time Saved</p>
               </div>
               <p
@@ -433,7 +474,7 @@
               class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-4 rounded-3xl border border-slate-300 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 card-hover"
             >
               <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-1">
-                <i class="fa-solid fa-chart-pie text-xs"></i>
+                <i class="fa-solid fa-chart-pie text-xs" aria-hidden="true"></i>
                 <p class="text-xs font-semibold">Schedule Rate</p>
               </div>
               <p
@@ -448,7 +489,7 @@
               class="bg-white hover:bg-slate-100/80 dark:bg-slate-900 dark:hover:bg-slate-800/40 p-4 rounded-3xl border border-slate-300 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 card-hover"
             >
               <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-1">
-                <i class="fa-solid fa-shield-halved text-xs"></i>
+                <i class="fa-solid fa-shield-halved text-xs" aria-hidden="true"></i>
                 <p class="text-xs font-semibold">Risk Alerts</p>
               </div>
               <p
@@ -466,7 +507,7 @@
           >
             <div class="flex justify-between items-center mb-1">
               <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-dot"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-dot" aria-hidden="true"></span>
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                   Today's Work Table
                 </h2>
@@ -479,66 +520,74 @@
               </span>
             </div>
             <p class="text-xs text-slate-400 dark:text-slate-500 mb-5 font-normal">
-              <i class="fa-solid fa-mug-saucer mr-1"></i> Sequenced work schedule with automated
+              <i class="fa-solid fa-mug-saucer mr-1" aria-hidden="true"></i> Sequenced work schedule with automated
               rest breaks
             </p>
 
             <div
               id="timelineDropzone"
+              role="region"
+              aria-label="Scheduled tasks timeline drop zone"
               ondragover="handleDragOver(event)"
               ondragleave="handleDragLeave(event)"
               ondrop="handleDropToTimeline(event)"
               class="min-h-[260px] p-2 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 transition-colors"
             >
-              <div id="timeline" class="w-full"></div>
+              <div id="timeline" role="list" class="w-full"></div>
             </div>
           </div>
 
           <!-- Risk Notification Box -->
           <div
+            role="status"
+            aria-live="polite"
             class="bg-amber-50/80 hover:bg-amber-100/80 dark:bg-amber-950/30 dark:hover:bg-amber-950/20 border border-amber-300 dark:border-amber-800/80 p-4 rounded-3xl flex items-start gap-3.5 card-hover"
           >
             <div class="text-amber-600 dark:text-amber-400 text-base mt-0.5">
-              <i class="fa-solid fa-triangle-exclamation"></i>
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
             </div>
             <div class="text-xs space-y-1">
-              <h4 class="font-bold text-amber-900 dark:text-amber-300 text-sm">Smart Risk Alert</h4>
+              <h3 class="font-bold text-amber-900 dark:text-amber-300 text-sm">Smart Risk Alert</h3>
               <p id="notificationText" class="text-amber-800 dark:text-amber-400 leading-relaxed">
                 No scheduling risks detected. You will be notified if any task exceeds its deadline.
               </p>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
 
     <!-- Mobile Navigation -->
-    <div
+    <nav
+      aria-label="Mobile quick actions"
       class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-300 dark:border-slate-800 px-6 py-2.5 flex justify-around items-center z-50"
     >
       <button
         onclick="switchTab('tasks')"
         id="navTasksBtn"
+        aria-label="View tasks backlog"
         class="flex flex-col items-center gap-0.5 text-indigo-600 dark:text-indigo-400"
       >
-        <i class="fa-solid fa-list-check text-base"></i>
+        <i class="fa-solid fa-list-check text-base" aria-hidden="true"></i>
         <span class="text-[10px] font-semibold">Tasks</span>
       </button>
       <button
         onclick="autoSchedule()"
+        aria-label="Auto schedule all tasks"
         class="flex flex-col items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-full w-12 h-12 shadow-lg shadow-indigo-600/30 -mt-6 border-4 border-slate-50 dark:border-slate-950 active:scale-90 transition"
       >
-        <i class="fa-solid fa-bolt text-base text-amber-300"></i>
+        <i class="fa-solid fa-bolt text-base text-amber-300" aria-hidden="true"></i>
       </button>
       <button
         onclick="switchTab('timeline')"
         id="navTimelineBtn"
+        aria-label="View today's schedule"
         class="flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500"
       >
-        <i class="fa-solid fa-calendar-day text-base"></i>
+        <i class="fa-solid fa-calendar-day text-base" aria-hidden="true"></i>
         <span class="text-[10px] font-semibold">Schedule</span>
       </button>
-    </div>
+    </nav>
 
     <!-- JavaScript Logic -->
     <script>
@@ -665,6 +714,8 @@
         if (tab === 'tasks') {
           sectionTasks.classList.remove('hidden');
           sectionTimeline.classList.add('hidden');
+          if (tabTasksBtn) tabTasksBtn.setAttribute('aria-selected', 'true');
+          if (tabTimelineBtn) tabTimelineBtn.setAttribute('aria-selected', 'false');
           tabTasksBtn.className =
             'flex-1 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold transition';
           tabTimelineBtn.className = 'flex-1 py-2.5 rounded-xl transition';
@@ -675,6 +726,8 @@
         } else {
           sectionTasks.classList.add('hidden');
           sectionTimeline.classList.remove('hidden');
+          if (tabTasksBtn) tabTasksBtn.setAttribute('aria-selected', 'false');
+          if (tabTimelineBtn) tabTimelineBtn.setAttribute('aria-selected', 'true');
           tabTimelineBtn.className =
             'flex-1 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold transition';
           tabTasksBtn.className = 'flex-1 py-2.5 rounded-xl transition';
@@ -683,6 +736,15 @@
           navTasksBtn.className =
             'flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500';
         }
+      }
+
+      function escapeAttr(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
       }
 
       function renderUnassignedTasks() {
@@ -698,20 +760,21 @@
 
         container.innerHTML = unassigned
           .map((task) => {
+            const safeTitle = escapeAttr(task.title);
             return `
-          <div id="task-${task.id}" draggable="true" ondragstart="handleDragStart(event, ${
+          <div id="task-${task.id}" role="listitem" draggable="true" ondragstart="handleDragStart(event, ${
             task.id
           })" class="draggable-card p-3.5 bg-slate-50 hover:bg-slate-100/90 dark:bg-slate-800/60 dark:hover:bg-slate-800/30 border border-slate-300 dark:border-slate-700/80 rounded-2xl flex justify-between items-center shadow-sm hover:border-indigo-400 dark:hover:border-indigo-500">
             <div class="space-y-1 pr-2">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <i class="fa-solid fa-grip-vertical text-slate-300 dark:text-slate-600 text-xs hidden sm:inline"></i>
+                <i class="fa-solid fa-grip-vertical text-slate-300 dark:text-slate-600 text-xs hidden sm:inline" aria-hidden="true"></i>
                 <span class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100">${
                   task.title
                 }</span>
                 ${getPriorityBadge(task.priority)}
               </div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
-                <i class="fa-regular fa-clock"></i> ${task.duration} hrs | ${appTranslate('Deadline')}: ${
+                <i class="fa-regular fa-clock" aria-hidden="true"></i> ${task.duration} hrs | ${appTranslate('Deadline')}: ${
                   task.deadline
                 }
               </p>
@@ -719,13 +782,13 @@
             <div class="flex items-center gap-1.5">
               <button onclick="toggleSchedule(${
                 task.id
-              })" class="bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 border border-indigo-300 dark:border-indigo-800 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition flex items-center gap-1" title="${appTranslate('Schedule Task')}">
-                <span>${appTranslate('Schedule')}</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              })" class="bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 border border-indigo-300 dark:border-indigo-800 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition flex items-center gap-1" title="${appTranslate('Schedule Task')}" aria-label="${appTranslate('Schedule task')}: ${safeTitle}">
+                <span>${appTranslate('Schedule')}</span> <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
               </button>
               <button onclick="deleteTask(${
                 task.id
-              })" class="text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 p-1.5 text-xs transition">
-                <i class="fa-solid fa-trash"></i>
+              })" class="text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 p-1.5 text-xs transition" title="${appTranslate('Delete task')}" aria-label="${appTranslate('Delete task')}: ${safeTitle}">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -749,7 +812,7 @@
             'space-y-3.5 relative min-h-[220px] flex flex-col justify-center items-center';
           container.innerHTML = `
           <div class="text-center py-6 text-slate-400 dark:text-slate-600 text-xs font-medium">
-            <i class="fa-regular fa-calendar-xmark text-3xl mb-2 block text-slate-300 dark:text-slate-700"></i>
+            <i class="fa-regular fa-calendar-xmark text-3xl mb-2 block text-slate-300 dark:text-slate-700" aria-hidden="true"></i>
             ${appTranslate('No tasks scheduled yet. Tap "Schedule" or click "Auto Schedule".')}
           </div>
         `;
@@ -775,6 +838,7 @@
         let urgentAlerts = [];
 
         scheduledTasks.forEach((task, index) => {
+          const safeTitle = escapeAttr(task.title);
           const taskDurationMins = task.duration * 60;
           const startStr = minutesToTime(currentMinutes);
           const endMins = currentMinutes + taskDurationMins;
@@ -800,16 +864,16 @@
                 : 'border-l-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20';
 
           timelineHTML += `
-          <div id="task-${task.id}" draggable="true" ondragstart="handleDragStart(event, ${
+          <div id="task-${task.id}" role="listitem" draggable="true" ondragstart="handleDragStart(event, ${
             task.id
           })" class="draggable-card flex items-start gap-3 sm:gap-4 relative z-10">
             <div class="w-11 sm:w-14 text-right text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 pt-2">${startStr}</div>
             <div class="p-3.5 bg-white hover:bg-slate-100/90 dark:bg-slate-800 dark:hover:bg-slate-800/40 border-l-4 ${borderClass} border border-slate-300 dark:border-slate-700/80 rounded-2xl flex-1 shadow-sm flex justify-between items-center">
               <div class="space-y-0.5">
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <h4 class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100">${
+                  <h3 class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100">${
                     task.title
-                  }</h4>
+                  </h3>
                   ${getPriorityBadge(task.priority)}
                 </div>
                 <p class="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
@@ -818,8 +882,8 @@
               </div>
               <button onclick="toggleSchedule(${
                 task.id
-              })" class="text-slate-400 hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400 p-1 transition" title="Unschedule">
-                <i class="fa-solid fa-circle-xmark text-base"></i>
+              })" class="text-slate-400 hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400 p-1 transition" title="Unschedule" aria-label="${appTranslate('Unschedule task')}: ${safeTitle}">
+                <i class="fa-solid fa-circle-xmark text-base" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -836,7 +900,7 @@
             <div class="flex items-start gap-3 sm:gap-4 relative z-10 opacity-90">
               <div class="w-11 sm:w-14 text-right text-[11px] sm:text-xs font-semibold text-slate-400 dark:text-slate-500 pt-1">${breakStart}</div>
               <div class="p-2.5 bg-emerald-50/80 hover:bg-emerald-100/80 dark:bg-emerald-950/30 dark:hover:bg-emerald-950/20 border border-dashed border-emerald-400 dark:border-emerald-800/80 rounded-xl flex-1 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 transition">
-                <i class="fa-solid fa-mug-hot text-emerald-600 dark:text-emerald-400"></i>
+                <i class="fa-solid fa-mug-hot text-emerald-600 dark:text-emerald-400" aria-hidden="true"></i>
                 <span><strong>${appTranslate('Short Break')}:</strong> ${breakStart} - ${breakEnd} (15 mins)</span>
               </div>
             </div>

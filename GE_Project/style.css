@@ -227,3 +227,51 @@ body {
   border: 1px solid #fecaca;
   color: #991b1b;
 }
+
+/* Accessibility: Screen reader only utility class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Accessibility: High contrast keyboard focus indicators */
+:focus-visible {
+  outline: 2px solid #031b69;
+  outline-offset: 2px;
+}
+
+.back-btn:focus-visible,
+.password-toggle:focus-visible,
+.wrapper .btn:focus-visible {
+  outline: 2px solid #031b69;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.input-box input:focus-visible {
+  outline: 2px solid #031b69;
+  outline-offset: 2px;
+  border-color: #031b69;
+  box-shadow: 0 0 5px rgba(3, 27, 105, 0.4);
+}
+
+.remember-forgot a:focus-visible,
+.register-link p a:focus-visible {
+  outline: 2px solid #031b69;
+  outline-offset: 2px;
+  border-radius: 2px;
+  text-decoration: underline;
+}
+
+.remember-forgot label input:focus-visible {
+  outline: 2px solid #031b69;
+  outline-offset: 2px;
+}
+
