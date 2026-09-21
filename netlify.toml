@@ -1,0 +1,25 @@
+# The browser-facing app lives in GE_Project/, so that directory is what gets
+# published. Without this, Netlify serves the repository root — which holds no
+# index.html — and every request returns "Page not found".
+[build]
+  publish = "GE_Project"
+
+[functions]
+  directory = "netlify/functions"
+
+# Long-lived caching for the static assets, but never for the HTML pages so
+# that auth-dependent markup is always re-fetched.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/office_background.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/style.css"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
