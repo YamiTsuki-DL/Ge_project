@@ -1,0 +1,27 @@
+{
+  "name": "ge-tablemanagement",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Automatic Work Table — static frontend with Netlify Functions and Netlify Database authentication",
+  "license": "MIT",
+  "scripts": {
+    "dev": "netlify dev --port 8889",
+    "db:generate": "drizzle-kit generate",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@netlify/database": "^1.0.0",
+    "bcryptjs": "^2.4.3",
+    "drizzle-orm": "beta"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^4.0.0",
+    "drizzle-kit": "beta",
+    "prettier": "^3.4.2"
+  }
+}
