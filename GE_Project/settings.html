@@ -237,10 +237,10 @@
       }
 
       function goBack() {
-        if (document.referrer && document.referrer.includes('profile.html')) {
+        if (document.referrer && new URL(document.referrer).pathname === '/profile') {
           window.history.back();
         } else {
-          window.location.href = 'profile.html';
+          window.location.href = '/profile';
         }
       }
 
@@ -248,7 +248,7 @@
         try {
           const response = await fetch('/api/me');
           if (!response.ok) {
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
             return;
           }
           const { user } = await response.json();
@@ -313,7 +313,7 @@
             window.setAppLanguage(selectedLanguage);
           }
           setTimeout(() => {
-            window.location.href = 'profile.html';
+            window.location.href = '/profile';
           }, 1500);
         } catch (error) {
           console.error('Save error:', error);

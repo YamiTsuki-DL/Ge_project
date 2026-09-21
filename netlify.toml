@@ -7,6 +7,18 @@
 [functions]
   directory = "netlify/functions"
 
+# Keep browser page routes separate from the /api/* function gateway. These
+# rewrites support readable URLs and direct visits without exposing .html.
+[[redirects]]
+  from = "/profile"
+  to = "/profile.html"
+  status = 200
+
+[[redirects]]
+  from = "/settings"
+  to = "/settings.html"
+  status = 200
+
 # Long-lived caching for the static assets, but never for the HTML pages so
 # that auth-dependent markup is always re-fetched.
 [[headers]]
