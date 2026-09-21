@@ -35,17 +35,27 @@
         <h1 id="formTitle">Login</h1>
 
         <div class="input-box">
-          <input id="username" type="text" placeholder="Username" required aria-label="Username" />
+          <label for="username" class="sr-only">Username</label>
+          <input
+            id="username"
+            type="text"
+            placeholder="Username"
+            required
+            aria-label="Username"
+            autocomplete="username"
+          />
           <i class="bx bxs-user" aria-hidden="true"></i>
         </div>
 
         <div class="input-box">
+          <label for="password" class="sr-only">Password</label>
           <input
             id="password"
             type="password"
             placeholder="Password (8+ characters)"
             required
             aria-label="Password"
+            autocomplete="current-password"
           />
           <i class="bx bxs-lock-alt" aria-hidden="true"></i>
           <button
@@ -53,6 +63,7 @@
             class="password-toggle"
             onclick="togglePassword('password', this)"
             aria-label="Show password"
+            aria-pressed="false"
           >
             Show
           </button>
@@ -60,9 +71,17 @@
 
         <div id="registerFields" hidden>
           <div class="input-box">
-            <input id="fullName" type="text" placeholder="Full name" aria-label="Full name" />
+            <label for="fullName" class="sr-only">Full name</label>
+            <input
+              id="fullName"
+              type="text"
+              placeholder="Full name"
+              aria-label="Full name"
+              autocomplete="name"
+            />
           </div>
           <div class="input-box">
+            <label for="studentId" class="sr-only">Student ID</label>
             <input
               id="studentId"
               type="text"
@@ -71,14 +90,17 @@
             />
           </div>
           <div class="input-box">
+            <label for="major" class="sr-only">Major</label>
             <input id="major" type="text" placeholder="Major (optional)" aria-label="Major" />
           </div>
           <div class="input-box">
+            <label for="passwordConfirmation" class="sr-only">Confirm password</label>
             <input
               id="passwordConfirmation"
               type="password"
               placeholder="Confirm password"
               aria-label="Confirm password"
+              autocomplete="new-password"
             />
             <i class="bx bxs-lock-alt" aria-hidden="true"></i>
             <button
@@ -86,6 +108,7 @@
               class="password-toggle"
               onclick="togglePassword('passwordConfirmation', this)"
               aria-label="Show password confirmation"
+              aria-pressed="false"
             >
               Show
             </button>
@@ -93,7 +116,7 @@
         </div>
 
         <div id="loginOptions" class="remember-forgot">
-          <label><input type="checkbox" aria-label="Remember me" />Remember me</label>
+          <label for="rememberMe"><input id="rememberMe" type="checkbox" aria-label="Remember me" />Remember me</label>
           <a href="#" aria-label="Password recovery">Forget password?</a>
         </div>
 
@@ -222,6 +245,7 @@
         input.type = isVisible ? 'password' : 'text';
         button.textContent = isVisible ? 'Show' : 'Hide';
         button.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
+        button.setAttribute('aria-pressed', isVisible ? 'false' : 'true');
       }
 
       async function redirectAuthenticatedUser() {
